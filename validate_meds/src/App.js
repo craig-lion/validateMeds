@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {  Form, Field, Formik } from 'formik';
-import { Effect } from 'formik-effect'
 import AddMeds from './addMeds'
 
 import './App.css';
@@ -36,7 +35,6 @@ const App = () => {
       initialValues={formik.initialValues}
       render={props =>
         <Form>
-          {/* <Effect onChange={formik.onChange} /> */}
           <label htmlFor="drugName">Medication Name</label>
           <Field
             name="drugName"
