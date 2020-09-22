@@ -1,6 +1,7 @@
 
 import { Formik, FormikProps, Form, Field, ErrorMessage, FieldArray } from 'formik';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import axios from 'axios';
 
 const AddMeds = () => {
   const [submitting, setSubmitting] = useState(true)
@@ -10,6 +11,14 @@ const AddMeds = () => {
     'asprin',
     'ibuprophen'
   ])
+  const [autocompleteArray, setAutocompleteArray] = useState([])
+  useEffect(() => {
+    axios.get('https://rxnav.nlm.nih.gov/REST/displaynames')
+    .then((names) => { 
+      console.log(names.data.displayTermsList.term)
+      setAutocompleteArray(names.data.displayTermsList.term)
+    })
+  })
   const handleSubmit = (values) => {
     setSubmitting(false);
     console.log('medications: ', medications)
