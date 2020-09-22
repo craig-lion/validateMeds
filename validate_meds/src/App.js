@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
-import styled from 'styled-components';
-import { useFormik } from 'formik';
+import {  Form, Field, Formik } from 'formik';
+import { Effect } from 'formik-effect'
+import AddMeds from './addMeds'
 
 import './App.css';
 
@@ -10,67 +11,58 @@ const App = () => {
     rxnorm: null,
   })
   const [allMeds, setAllMeds] = useState([])
-  const [count, setCount] = useState(1)
   const newMedication = () => {
     console.log('ye dis click fam')
-    setCount(count + 1)
   }
   const saveMedications = () => {
     console.log('medications saved')
   }
 
-  const handleChange = (e) => {
-    console.log(e.target.value)
-    setOneMed({...oneMed, name:e.target.value})
-  }
-
-  const formik = useFormik({
+  const formik = {
     initialValues: {
       drugName: '',
     },
-    onSubmit: name => {
-      setOneMed({...oneMed, name})
+    onSubmit: (values) => {
+      console.log('this is oneMed:', oneMed)
+      setAllMeds([...allMeds, oneMed])
+      console.log(oneMed)
     },
-  });
+    onChange: (currentFormik, nextFormik) => {
+      // do whatevs
+      // FYI if you alter state it will cause another render
+      console.log(currentFormik, nextFormik)
+   }
+  };
 
   const OneInput = (c) => (
-      <NewMedContainer key={c}>
-        <form onSubmit={formik.handleSubmit}>
-      <label htmlFor="drugName">Medication Name</label>
-      <input
-        name="drugName"
-        onChange={formik.handleChange}
-        value={formik.values.drugName}
-        size="40"
-      />
-      <button type="submit">Submit</button>
-      <button type="button" onClick={newMedication}>Enter Another Medication</button>
-     </form>
-       </NewMedContainer>
+    <>
+    <Formik
+      key={c}
+      onSubmit={formik.onSubmit}
+      initialValues={formik.initialValues}
+      render={props =>
+        <Form>
+          {/* <Effect onChange={formik.onChange} /> */}
+          <label htmlFor="drugName">Medication Name</label>
+          <Field
+            name="drugName"
+            placeholder="Medication Name"
+            size="40"
+          />
+          <button type="submit">Enter Another Medication</button>
+        </Form>}
+    />
+    </>
   )
-
-
-  const makeAllInputs = () => {
-    let array = []
-    for (let i=0; i < count; i++) {
-      array.push(OneInput(count))
-    }
-    return array
-  }
-
-  const allInputs = makeAllInputs()
 
   return (
       <>
-        {allInputs}
+        <OneInput />
         <button type="button" onClick={saveMedications}>Save All Medications</button>
+        <AddMeds />
       </>
   );
 }
 
-const NewMedContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`
-
 export default App;
+
