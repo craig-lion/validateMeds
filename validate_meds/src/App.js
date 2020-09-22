@@ -11,12 +11,6 @@ const App = () => {
     rxnorm: null,
   })
   const [allMeds, setAllMeds] = useState([])
-  const newMedication = () => {
-    console.log('ye dis click fam')
-  }
-  const saveMedications = () => {
-    console.log('medications saved')
-  }
 
   const formik = {
     initialValues: {
@@ -57,8 +51,6 @@ const App = () => {
 
   return (
       <>
-        <OneInput />
-        <button type="button" onClick={saveMedications}>Save All Medications</button>
         <AddMeds />
       </>
   );

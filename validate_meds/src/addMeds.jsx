@@ -2,20 +2,16 @@
 import { Formik, FormikProps, Form, Field, ErrorMessage, FieldArray } from 'formik';
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 const AddMeds = () => {
   const [submitting, setSubmitting] = useState(true)
-  const [medications, setMedications] = useState([
-    'tylenol',
-    'advil',
-    'asprin',
-    'ibuprophen'
-  ])
+  const [medications, setMedications] = useState([''])
   const [autocompleteArray, setAutocompleteArray] = useState([])
   useEffect(() => {
     axios.get('https://rxnav.nlm.nih.gov/REST/displaynames')
     .then((names) => { 
-      console.log(names.data.displayTermsList.term)
       setAutocompleteArray(names.data.displayTermsList.term)
     })
   })
@@ -61,7 +57,18 @@ const AddMeds = () => {
                       <Field 
                         name={`medications.${index}`}
                         id={medication}
-                       />     
+                        render={() => (
+                          <Autocomplete
+                          id={medication}
+                          freeSolo
+                          options={autocompleteArray.map((med) => med)}
+                          renderInput={(params) => (
+                            <TextField {...params} label="Enter Medication" margin="normal" variant="outlined" />
+                          )}
+                        /> 
+                        )}
+                       /> 
+                         
 							         
                         {/* Add this medication to array */}
                         <button 
@@ -69,7 +76,7 @@ const AddMeds = () => {
                          onClick={
                            () => {
                             const newMed = formProps.values.medications[index]
-                            console.log(newMed)
+                            console.log('this is newMed', newMed)
                             setMedications([
                           ...medications.slice(0,index), 
                           newMed,
