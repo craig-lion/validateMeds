@@ -7,26 +7,22 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 
 const AddMeds = () => {
   const [submitting, setSubmitting] = useState(true)
-  const [medications, setMedications] = useState([''])
+  const [medications, setMedications] = useState([])
   const [autocompleteArray, setAutocompleteArray] = useState([])
   useEffect(() => {
     axios.get('https://rxnav.nlm.nih.gov/REST/displaynames')
     .then((names) => { 
       setAutocompleteArray(names.data.displayTermsList.term)
     })
-  })
+  }, [])
   const handleSubmit = (values) => {
     setSubmitting(false);
     console.log('medications: ', medications)
 
   }
-
-  const saveMed = (e) => {
-    console.log('here is where we would update medications', e.getElement)
-  }
   
   const saveAllMeds = () => {
-    console.log('this is medications: ', medications)
+    console.log('we are now saving medications: ', medications)
   }
     return(
       <Formik
@@ -40,14 +36,15 @@ const AddMeds = () => {
             errors.medications = "At least one medication is required";
           return errors;
         }}
-
         onSubmit={handleSubmit}
-        render={formProps => {
+      >
+        {formProps => {
           return(
             <Form>
               <FieldArray
                 name='medications'
-                render={arrayHelpers => (
+              >
+                {arrayHelpers => (
             	   <div>         
                    {formProps.values.medications.map((medication, index) => (    
     
@@ -57,9 +54,10 @@ const AddMeds = () => {
                       <Field 
                         name={`medications.${index}`}
                         id={medication}
-                        render={() => (
+                      >
+                        {() => (
                           <Autocomplete
-                          id={medication}
+                          id={`${index}`}
                           freeSolo
                           options={autocompleteArray.map((med) => med)}
                           renderInput={(params) => (
@@ -67,7 +65,7 @@ const AddMeds = () => {
                           )}
                         /> 
                         )}
-                       /> 
+                       </Field> 
                          
 							         
                         {/* Add this medication to array */}
@@ -75,8 +73,14 @@ const AddMeds = () => {
                          type="button"
                          onClick={
                            () => {
-                            const newMed = formProps.values.medications[index]
-                            console.log('this is newMed', newMed)
+                            const newMed = {
+                              drugName:document.getElementById(`${index}`).value,
+                              Rxnorm: null
+                            }
+                            axios.get('/api/getId', {
+                              params:{name:newMed.drugName}
+                            })
+                            .then(id => newMed.Rxnorm = id.data[0])
                             setMedications([
                           ...medications.slice(0,index), 
                           newMed,
@@ -111,11 +115,11 @@ const AddMeds = () => {
                   >Save Medications</button>
                  </div>
             	  )}
-            	/>
+            	</FieldArray>
               </Form>
           );
         }}
-      />);
+      </Formik>);
   }
 
   export default AddMeds
