@@ -11,7 +11,6 @@ app.use(pino);
 
 
 app.get('/api/getId', (req, res) => {
-  console.log(req.query.name)
   axios.get(`https://rxnav.nlm.nih.gov/REST/rxcui?name=${req.query.name}`)
   .then(medication => res.send(medication.data.idGroup.rxnormId))
 })
