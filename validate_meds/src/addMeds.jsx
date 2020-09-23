@@ -1,12 +1,12 @@
 
-import { Formik, FormikProps, Form, Field, ErrorMessage, FieldArray } from 'formik';
+import { Formik, Form, Field, FieldArray } from 'formik';
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import { createFilterOptions } from '@material-ui/lab/Autocomplete';
 
 const AddMeds = () => {
-  const [submitting, setSubmitting] = useState(true)
   const [medications, setMedications] = useState([])
   const [autocompleteArray, setAutocompleteArray] = useState([])
   useEffect(() => {
@@ -16,10 +16,13 @@ const AddMeds = () => {
     })
   }, [])
   const handleSubmit = (values) => {
-    setSubmitting(false);
-    console.log('medications: ', medications)
-
+    console.log('handleSubmit medications: ', medications)
   }
+
+  const filterOptions = createFilterOptions({
+    matchFrom: 'start',
+    limit: 15
+  });
   
   const saveAllMeds = () => {
     console.log('we are now saving medications: ', medications)
@@ -60,6 +63,7 @@ const AddMeds = () => {
                           id={`${index}`}
                           freeSolo
                           options={autocompleteArray.map((med) => med)}
+                          filterOptions={filterOptions}
                           renderInput={(params) => (
                             <TextField {...params} label="Enter Medication" margin="normal" variant="outlined" />
                           )}
@@ -80,7 +84,7 @@ const AddMeds = () => {
                             axios.get('/api/getId', {
                               params:{name:newMed.drugName}
                             })
-                            .then(id => newMed.Rxnorm = id.data[0])
+                            .then(id => {newMed.Rxnorm = id.data[0]; console.log(newMed)})
                             setMedications([
                           ...medications.slice(0,index), 
                           newMed,
@@ -88,7 +92,7 @@ const AddMeds = () => {
                             ])
                           }
                           }
-                        >Save Medication</button> 
+                        >Save This Medication</button> 
 
                        {/* Remove this medication */}
                        <button 
@@ -98,7 +102,7 @@ const AddMeds = () => {
                             setMedications(medications)
                             arrayHelpers.remove(index)
                           }}
-                        >Remove Medication</button>
+                        >Remove This Medication</button>
 							      
                             
                      </div>
@@ -108,11 +112,11 @@ const AddMeds = () => {
                   <button 
                     type="button"
                     onClick={() => arrayHelpers.push('')}
-                  >Add Medication</button>
+                  >Add Another Medication</button>
                   <button 
                     type="button"
                     onClick={saveAllMeds}
-                  >Save Medications</button>
+                  >Save All Medications</button>
                  </div>
             	  )}
             	</FieldArray>
