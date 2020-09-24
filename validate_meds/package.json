@@ -24,10 +24,11 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server": "node-env-run server --exec nodemon | pino-colada",
-    "dev": "run-p server start"
+    "dev": "run-p server start",
+    "lint": "eslint ."
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "airbnb"
   },
   "browserslist": {
     "production": [
@@ -42,10 +43,17 @@
     ]
   },
   "devDependencies": {
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-prettier": "^3.1.4",
     "express-pino-logger": "^5.0.0",
+    "husky": "^4.3.0",
+    "lint-staged": "^10.4.0",
     "node-env-run": "^4.0.1",
     "nodemon": "^2.0.4",
     "npm-run-all": "^4.1.5",
-    "pino-colada": "^2.1.0"
+    "pino-colada": "^2.1.0",
+    "prettier": "^2.1.2"
   }
 }
